@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@theme {
+  --color-saffron-50: #fff8ed;
+  --color-saffron-100: #ffefcf;
+  --color-saffron-200: #ffd99b;
+  --color-saffron-300: #ffbf5e;
+  --color-saffron-400: #ff9f2e;
+  --color-saffron-500: #f97e07;
+  --color-saffron-600: #e85d04;
+  --color-saffron-700: #c2410c;
+  --color-saffron-800: #9a3412;
+  --color-saffron-900: #7c2d12;
+
+  --color-maroon-50: #fdf2f2;
+  --color-maroon-100: #fce4e4;
+  --color-maroon-200: #f9cccc;
+  --color-maroon-300: #f4a8a8;
+  --color-maroon-400: #ec7676;
+  --color-maroon-500: #e04848;
+  --color-maroon-600: #cc2a2a;
+  --color-maroon-500: #b91c1c;
+  --color-maroon-600: #991b1b;
+  --color-maroon-700: #7f1d1d;
+  --color-maroon-800: #6b1717;
+  --color-maroon-900: #4a0f0f;
+
+  --color-gold-50: #fefce8;
+  --color-gold-100: #fef9c3;
+  --color-gold-200: #fef08a;
+  --color-gold-300: #fde047;
+  --color-gold-400: #facc15;
+  --color-gold-500: #eab308;
+  --color-gold-600: #ca8a04;
+  --color-gold-700: #a16207;
+
+  --color-cream: #fefbf3;
+  --color-parchment: #faf5e8;
+}
+
+:root {
+  --font-devanagari: 'Noto Sans Devanagari', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: #fefbf3;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-devanagari {
+  font-family: var(--font-devanagari);
+}
+
+@layer utilities {
+  .animate-pop {
+    animation: pop 0.3s ease-out;
+  }
+  .animate-shake {
+    animation: shake 0.4s ease-in-out;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  .animate-bounce-in {
+    animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  .animate-pulse-ring {
+    animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes pop {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.1); opacity: 1; }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(249, 126, 7, 0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(249, 126, 7, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(249, 126, 7, 0); }
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.path-connector {
+  stroke-dasharray: 8 6;
+  stroke-dashoffset: 0;
+  animation: dashMove 20s linear infinite;
+}
+
+@keyframes dashMove {
+  to { stroke-dashoffset: -100; }
+}
