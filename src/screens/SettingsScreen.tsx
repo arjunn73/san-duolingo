@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuth } from '../lib/auth';
 import type { UserSettings } from '../lib/supabase';
 import { ArrowLeft, Volume2, Key, Save, Check, ExternalLink, Info } from 'lucide-react';
@@ -16,7 +16,10 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
 
   useEffect(() => {
     async function fetchSettings() {
-      if (!user) return;
+      if (!user || !isSupabaseConfigured) {
+        setLoading(false);
+        return;
+      }
       const { data } = await supabase
         .from('user_settings')
         .select('*')
@@ -34,7 +37,7 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
   }, [user]);
 
   const handleSave = async () => {
-    if (!user) return;
+    if (!user || !isSupabaseConfigured) return;
     setSaving(true);
     await supabase.from('user_settings').upsert({
       user_id: user.id,
@@ -78,6 +81,14 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
               <p className="text-xs text-saffron-400">Powered by ElevenLabs</p>
             </div>
           </div>
+
+          {!user && (
+            <div className="mb-4 bg-saffron-50 rounded-xl p-3 border border-saffron-100">
+              <p className="text-sm text-saffron-600 font-medium">
+                Sign in to save your TTS settings across devices. Guest settings are stored locally.
+              </p>
+            </div>
+          )}
 
           <div className="space-y-5">
             <div>
@@ -139,7 +150,7 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
 
             <button
               onClick={handleSave}
-              disabled={saving}
+              disabled={saving || !user}
               className="w-full py-3.5 rounded-xl bg-gradient-to-r from-saffron-500 to-saffron-600 text-white font-bold text-sm shadow-lg shadow-saffron-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {saved ? (

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import type { ReactNode } from 'react';
-import { supabase } from './supabase';
+import { supabase, isSupabaseConfigured } from './supabase';
 import type { User, Session } from '@supabase/supabase-js';
 import type { UserProgress } from './supabase';
 
@@ -29,6 +29,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     mountedRef.current = true;
+
+    if (!isSupabaseConfigured) {
+      setIsGuest(true);
+      setLoading(false);
+      return;
+    }
 
     supabase.auth.getSession().then(({ data }) => {
       if (!mountedRef.current) return;
@@ -62,17 +68,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signUp = useCallback(async (email: string, password: string) => {
+    if (!isSupabaseConfigured) return { error: 'Supabase is not configured.' };
     const { error } = await supabase.auth.signUp({ email, password });
     return { error: error?.message ?? null };
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
+    if (!isSupabaseConfigured) return { error: 'Supabase is not configured.' };
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error: error?.message ?? null };
   }, []);
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
+    if (isSupabaseConfigured) await supabase.auth.signOut();
     setIsGuest(false);
     localStorage.removeItem(GUEST_KEY);
   }, []);
@@ -154,7 +162,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (isGuest && !user) {
+    if ((isGuest && !user) || !isSupabaseConfigured) {
       const gp = loadGuestProgress();
       const gc = loadGuestCompletions();
       setProgress({
@@ -217,7 +225,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       const newTotalXp = (progress?.total_xp ?? 0) + xpEarned;
       const newLongestStreak = Math.max(progress?.longest_streak ?? 0, newStreak);
 
-      if (isGuest && !user) {
+      if ((isGuest && !user) || !isSupabaseConfigured) {
         const gp: GuestProgress = {
           total_xp: newTotalXp,
           current_streak: newStreak,

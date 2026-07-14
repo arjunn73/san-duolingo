@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuth, useProgress } from '../lib/auth';
 import type { Unit, Lesson } from '../lib/supabase';
 import { Flame, Star, Trophy, BookOpen, Target, LogOut, ChevronRight, Award, UserCircle, Sparkles } from 'lucide-react';
@@ -12,6 +12,7 @@ export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 's
 
   useEffect(() => {
     async function fetchData() {
+      if (!isSupabaseConfigured) return;
       const [unitsRes, lessonsRes] = await Promise.all([
         supabase.from('units').select('*').order('order_index'),
         supabase.from('lessons').select('*').order('order_index'),

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useProgress, useAuth } from '../lib/auth';
 import type { Unit, Lesson } from '../lib/supabase';
 import {
@@ -22,6 +22,10 @@ export function LearningPathScreen({
 
   useEffect(() => {
     async function fetchData() {
+      if (!isSupabaseConfigured) {
+        setLoading(false);
+        return;
+      }
       const [unitsRes, lessonsRes] = await Promise.all([
         supabase.from('units').select('*').order('order_index'),
         supabase.from('lessons').select('*').order('order_index'),
