@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useAuth } from '../lib/auth';
-import { BookOpen, Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, ArrowLeft, UserCircle } from 'lucide-react';
 
-export function AuthScreen() {
-  const { signIn, signUp } = useAuth();
+export function AuthScreen({ onBack }: { onBack: () => void }) {
+  const { signIn, signUp, continueAsGuest } = useAuth();
   const [mode, setMode] = useState<'signin' | 'signup'>('signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,6 +19,11 @@ export function AuthScreen() {
     if (error) setError(error);
   };
 
+  const handleGuest = () => {
+    continueAsGuest();
+    onBack();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-cream via-parchment to-saffron-50 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Decorative background */}
@@ -27,13 +32,22 @@ export function AuthScreen() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-maroon-200/10 blur-3xl" />
 
       <div className="w-full max-w-md relative z-10">
+        {/* Back button */}
+        <button
+          onClick={onBack}
+          className="flex items-center gap-1.5 text-sm font-semibold text-saffron-500 hover:text-saffron-700 transition-colors mb-6"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to learning
+        </button>
+
         <div className="text-center mb-8 animate-bounce-in">
           <div className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-gradient-to-br from-saffron-400 via-saffron-500 to-saffron-600 shadow-2xl shadow-saffron-500/30 mb-5 border-2 border-white/20">
             <span className="font-devanagari text-5xl font-bold text-white">सं</span>
           </div>
           <h1 className="text-4xl font-extrabold text-saffron-900 tracking-tight">Sanskrit Path</h1>
           <p className="text-saffron-600 mt-2 text-sm font-medium">
-            Learn Sanskrit from the ground up
+            Create an account to save your progress
           </p>
           <div className="flex items-center justify-center gap-2 mt-3">
             <span className="text-xs font-semibold text-saffron-400 bg-saffron-50 px-2.5 py-1 rounded-full border border-saffron-100">Devanagari</span>
@@ -111,18 +125,26 @@ export function AuthScreen() {
             </button>
           </form>
 
+          {/* Divider */}
           <div className="mt-6 flex items-center gap-3 text-xs text-saffron-400">
             <div className="flex-1 h-px bg-saffron-100" />
-            <span className="flex items-center gap-1">
-              <Sparkles className="w-3 h-3" /> Progress saved across devices
-            </span>
+            <span>or</span>
             <div className="flex-1 h-px bg-saffron-100" />
           </div>
+
+          {/* Continue as Guest */}
+          <button
+            onClick={handleGuest}
+            className="w-full mt-4 py-3.5 rounded-xl bg-white border-2 border-saffron-200 text-saffron-700 font-bold text-sm hover:bg-saffron-50 hover:border-saffron-300 transition-all flex items-center justify-center gap-2"
+          >
+            <UserCircle className="w-5 h-5" />
+            Continue as Guest
+          </button>
         </div>
 
-        <p className="text-center mt-6 text-xs text-saffron-400 flex items-center justify-center gap-1.5">
-          <BookOpen className="w-3.5 h-3.5" />
-          Master the language of the Vedas
+        <p className="text-center mt-5 text-xs text-saffron-400 leading-relaxed">
+          <Sparkles className="w-3 h-3 inline mr-1" />
+          Guests can access all lessons. Create an account to save progress and earn XP across devices.
         </p>
       </div>
     </div>

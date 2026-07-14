@@ -7,7 +7,7 @@ import { ProfileScreen } from './screens/ProfileScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 import { Home, User } from 'lucide-react';
 
-type Screen = 'path' | 'lesson' | 'profile' | 'settings';
+type Screen = 'path' | 'lesson' | 'profile' | 'settings' | 'auth';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -22,9 +22,9 @@ function AppContent() {
     );
   }
 
-  if (!user) {
-    return <AuthScreen />;
-  }
+  // Show auth screen only when user explicitly navigates to it
+  // Guests and logged-in users both get full app access
+  const showAuth = screen === 'auth';
 
   const handleStartLesson = (lessonId: string) => {
     setActiveLessonId(lessonId);
@@ -36,9 +36,13 @@ function AppContent() {
     setScreen('path');
   };
 
+  if (showAuth) {
+    return <AuthScreen onBack={() => setScreen('path')} />;
+  }
+
   return (
     <div className="min-h-screen bg-cream">
-      {screen === 'path' && <LearningPathScreen onStartLesson={handleStartLesson} />}
+      {screen === 'path' && <LearningPathScreen onStartLesson={handleStartLesson} onShowAuth={() => setScreen('auth')} />}
       {screen === 'lesson' && activeLessonId && (
         <LessonPlayerScreen
           lessonId={activeLessonId}
@@ -78,7 +82,7 @@ function AppContent() {
               }`}
             >
               <User className="w-6 h-6" strokeWidth={screen === 'profile' || screen === 'settings' ? 2.5 : 2} />
-              <span className="text-xs font-semibold">Profile</span>
+              <span className="text-xs font-semibold">{user ? 'Profile' : 'Account'}</span>
             </button>
           </div>
         </nav>

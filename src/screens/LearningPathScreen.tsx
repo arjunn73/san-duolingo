@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { useProgress } from '../lib/auth';
+import { useProgress, useAuth } from '../lib/auth';
 import type { Unit, Lesson } from '../lib/supabase';
 import {
   Circle, Star, Trophy, Lock, CheckCircle2,
-  Play, PenTool, Scroll, Flame,
+  Play, PenTool, Scroll, Flame, Sparkles, ChevronRight,
 } from 'lucide-react';
 
 export function LearningPathScreen({
   onStartLesson,
+  onShowAuth,
 }: {
   onStartLesson: (lessonId: string) => void;
+  onShowAuth: () => void;
 }) {
+  const { isGuest } = useAuth();
   const { progress, completions, loadingProgress } = useProgress();
   const [units, setUnits] = useState<Unit[]>([]);
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -32,6 +35,7 @@ export function LearningPathScreen({
 
   const getLessonStatus = (lesson: Lesson, allLessons: Lesson[], completed: string[]) => {
     if (completed.includes(lesson.id)) return 'completed';
+    if (isGuest) return 'available';
     const lessonIndex = allLessons.findIndex((l) => l.id === lesson.id);
     if (lessonIndex === 0) return 'available';
     const prevLesson = allLessons[lessonIndex - 1];
@@ -119,6 +123,26 @@ export function LearningPathScreen({
             <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 ml-3">
               <Play className="w-6 h-6 fill-white text-white" />
             </div>
+          </button>
+        </div>
+      )}
+
+      {/* Guest CTA */}
+      {isGuest && (
+        <div className="max-w-2xl mx-auto px-4 mt-4">
+          <button
+            onClick={onShowAuth}
+            className="w-full bg-gradient-to-r from-gold-100 to-saffron-50 rounded-2xl p-3.5 flex items-center justify-between border border-gold-200/50 hover:border-gold-300 hover:shadow-md transition-all"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-gold-200 flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-gold-700" />
+              </div>
+              <p className="text-sm font-semibold text-saffron-800">
+                Create an account to save your progress
+              </p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-saffron-400" />
           </button>
         </div>
       )}
