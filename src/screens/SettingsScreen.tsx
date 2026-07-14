@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth';
 import type { UserSettings } from '../lib/supabase';
-import { ArrowLeft, Volume2, Key, Save, Check, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Volume2, Key, Save, Check, ExternalLink, Info } from 'lucide-react';
 
 export function SettingsScreen({ onBack }: { onBack: () => void }) {
   const { user } = useAuth();
@@ -56,21 +56,21 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
   }
 
   return (
-    <div className="min-h-screen bg-cream pb-24">
-      <div className="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-saffron-100">
+    <div className="min-h-screen bg-cream pb-28">
+      <div className="sticky top-0 z-30 bg-cream/80 backdrop-blur-xl border-b border-saffron-100/50">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
-          <button onClick={onBack} className="shrink-0">
-            <ArrowLeft className="w-6 h-6 text-saffron-500 hover:text-saffron-700" />
+          <button onClick={onBack} className="shrink-0 group">
+            <ArrowLeft className="w-6 h-6 text-saffron-500 group-hover:text-saffron-700 transition-colors" />
           </button>
-          <h1 className="font-bold text-saffron-900 text-lg">Settings</h1>
+          <h1 className="font-extrabold text-saffron-900 text-lg">Settings</h1>
         </div>
       </div>
 
       <div className="max-w-2xl mx-auto px-4 mt-6 space-y-6">
         {/* TTS Settings */}
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-saffron-100">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-saffron-50 flex items-center justify-center">
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-saffron-100/50">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-saffron-100 to-saffron-200/50 flex items-center justify-center">
               <Volume2 className="w-5 h-5 text-saffron-600" />
             </div>
             <div>
@@ -79,9 +79,9 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
-              <label className="flex items-center gap-1.5 text-sm font-semibold text-saffron-900 mb-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-semibold text-saffron-900 mb-2">
                 <Key className="w-3.5 h-3.5" />
                 ElevenLabs API Key
               </label>
@@ -90,10 +90,10 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="Enter your ElevenLabs API key"
-                className="w-full px-4 py-3 rounded-xl border-2 border-saffron-100 focus:border-saffron-400 focus:ring-2 focus:ring-saffron-100 outline-none transition-all text-saffron-900 placeholder-saffron-300"
+                className="w-full px-4 py-3 rounded-xl border-2 border-saffron-100 focus:border-saffron-400 focus:ring-4 focus:ring-saffron-100/50 outline-none transition-all text-saffron-900 placeholder-saffron-300/70"
               />
-              <p className="text-xs text-saffron-400 mt-1.5">
-                Don't have a key?{' '}
+              <p className="text-xs text-saffron-400 mt-2 flex items-center gap-1">
+                Don't have a key?
                 <a
                   href="https://elevenlabs.io"
                   target="_blank"
@@ -106,7 +106,7 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-saffron-900 mb-1.5">
+              <label className="block text-sm font-semibold text-saffron-900 mb-2">
                 Voice ID
               </label>
               <input
@@ -114,21 +114,21 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
                 value={voiceId}
                 onChange={(e) => setVoiceId(e.target.value)}
                 placeholder="21m00Tcm4TlvDq8ikWAM"
-                className="w-full px-4 py-3 rounded-xl border-2 border-saffron-100 focus:border-saffron-400 focus:ring-2 focus:ring-saffron-100 outline-none transition-all text-saffron-900 placeholder-saffron-300"
+                className="w-full px-4 py-3 rounded-xl border-2 border-saffron-100 focus:border-saffron-400 focus:ring-4 focus:ring-saffron-100/50 outline-none transition-all text-saffron-900 placeholder-saffron-300/70"
               />
-              <p className="text-xs text-saffron-400 mt-1.5">
+              <p className="text-xs text-saffron-400 mt-2">
                 Default voice: Rachel (21m00Tcm4TlvDq8ikWAM). Find more voices in your ElevenLabs dashboard.
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-saffron-900 mb-1.5">
+              <label className="block text-sm font-semibold text-saffron-900 mb-2">
                 Model ID
               </label>
               <select
                 value={modelId}
                 onChange={(e) => setModelId(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border-2 border-saffron-100 focus:border-saffron-400 focus:ring-2 focus:ring-saffron-100 outline-none transition-all text-saffron-900 bg-white"
+                className="w-full px-4 py-3 rounded-xl border-2 border-saffron-100 focus:border-saffron-400 focus:ring-4 focus:ring-saffron-100/50 outline-none transition-all text-saffron-900 bg-white"
               >
                 <option value="eleven_multilingual_v2">eleven_multilingual_v2 (recommended)</option>
                 <option value="eleven_multilingual_v1">eleven_multilingual_v1</option>
@@ -140,7 +140,7 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-saffron-500 to-saffron-600 text-white font-bold text-sm shadow-lg shadow-saffron-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-saffron-500 to-saffron-600 text-white font-bold text-sm shadow-lg shadow-saffron-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
             >
               {saved ? (
                 <>
@@ -158,12 +158,17 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
         </div>
 
         {/* Info card */}
-        <div className="bg-saffron-50 rounded-2xl p-5 border border-saffron-100">
-          <p className="text-sm text-saffron-700 font-medium leading-relaxed">
-            Your API key is stored securely in your account and is only used to generate
-            pronunciation audio for Devanagari letters and Sanskrit phonemes during lessons.
-            Without a key, the app works fully — just without audio playback.
-          </p>
+        <div className="bg-gradient-to-r from-saffron-50 to-gold-50/50 rounded-2xl p-5 border border-saffron-100/50">
+          <div className="flex items-start gap-3">
+            <div className="shrink-0 w-8 h-8 rounded-lg bg-saffron-100 flex items-center justify-center">
+              <Info className="w-4 h-4 text-saffron-600" />
+            </div>
+            <p className="text-sm text-saffron-700 font-medium leading-relaxed">
+              Your API key is stored securely in your account and is only used to generate
+              pronunciation audio for Devanagari letters and Sanskrit phonemes during lessons.
+              Without a key, the app works fully — just without audio playback.
+            </p>
+          </div>
         </div>
       </div>
     </div>

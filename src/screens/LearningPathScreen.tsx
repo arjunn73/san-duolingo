@@ -4,7 +4,7 @@ import { useProgress } from '../lib/auth';
 import type { Unit, Lesson } from '../lib/supabase';
 import {
   Circle, Star, Trophy, Lock, CheckCircle2,
-  Play, PenTool, Scroll
+  Play, PenTool, Scroll, Flame,
 } from 'lucide-react';
 
 export function LearningPathScreen({
@@ -16,7 +16,6 @@ export function LearningPathScreen({
   const [units, setUnits] = useState<Unit[]>([]);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
-
 
   useEffect(() => {
     async function fetchData() {
@@ -66,26 +65,26 @@ export function LearningPathScreen({
   }
 
   return (
-    <div className="min-h-screen bg-cream pb-24">
+    <div className="min-h-screen bg-cream pb-28">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-saffron-100">
+      <div className="sticky top-0 z-30 bg-cream/80 backdrop-blur-xl border-b border-saffron-100/50">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-saffron-400 to-saffron-600 flex items-center justify-center">
-              <span className="font-devanagari text-lg font-bold text-white">सं</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-saffron-400 to-saffron-600 flex items-center justify-center shadow-md shadow-saffron-300">
+              <span className="font-devanagari text-xl font-bold text-white">सं</span>
             </div>
-            <span className="font-bold text-saffron-900 text-lg">Sanskrit Path</span>
+            <span className="font-extrabold text-saffron-900 text-lg tracking-tight">Sanskrit Path</span>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 bg-saffron-50 px-3 py-1.5 rounded-full">
-              <span className="text-base">🔥</span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 bg-gradient-to-r from-saffron-50 to-saffron-100/50 px-3 py-1.5 rounded-full border border-saffron-200/50">
+              <Flame className="w-4 h-4 text-saffron-500 fill-saffron-400" />
               <span className="font-bold text-saffron-700 text-sm">{progress?.current_streak ?? 0}</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-gold-100 px-3 py-1.5 rounded-full">
-              <Star className="w-3.5 h-3.5 text-gold-600 fill-gold-500" />
+            <div className="flex items-center gap-1.5 bg-gradient-to-r from-gold-100 to-gold-200/50 px-3 py-1.5 rounded-full border border-gold-300/50">
+              <Star className="w-4 h-4 text-gold-600 fill-gold-500" />
               <span className="font-bold text-gold-700 text-sm">{progress?.total_xp ?? 0}</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-maroon-50 px-3 py-1.5 rounded-full">
+            <div className="flex items-center gap-1.5 bg-gradient-to-r from-maroon-50 to-maroon-100/50 px-3 py-1.5 rounded-full border border-maroon-200/50">
               <span className="text-sm">❤️</span>
               <span className="font-bold text-maroon-600 text-sm">{progress?.hearts ?? 5}</span>
             </div>
@@ -95,31 +94,37 @@ export function LearningPathScreen({
 
       {/* Continue Banner */}
       {firstAvailable && (
-        <div className="max-w-2xl mx-auto px-4 pt-4">
+        <div className="max-w-2xl mx-auto px-4 pt-5">
           <button
             onClick={() => onStartLesson(firstAvailable)}
-            className="w-full bg-gradient-to-r from-saffron-500 to-saffron-600 rounded-2xl p-4 flex items-center justify-between text-white shadow-lg shadow-saffron-500/20 hover:scale-[1.01] active:scale-[0.99] transition-all"
+            className="w-full bg-gradient-to-r from-saffron-500 via-saffron-600 to-saffron-700 rounded-3xl p-5 flex items-center justify-between text-white shadow-xl shadow-saffron-500/25 hover:shadow-2xl hover:shadow-saffron-500/30 hover:scale-[1.01] active:scale-[0.99] transition-all"
           >
             <div className="text-left">
-              <p className="text-xs font-semibold text-saffron-100 uppercase tracking-wide">
-                {completions.length > 0 ? 'Continue Learning' : 'Start Here'}
+              <p className="text-xs font-bold text-saffron-100 uppercase tracking-wider mb-1">
+                {completions.length > 0 ? 'Continue Learning' : 'Start Your Journey'}
               </p>
-              <p className="font-bold text-base mt-0.5">
+              <p className="font-bold text-lg">
                 {(() => {
                   const lesson = lessons.find((l) => l.id === firstAvailable);
                   return lesson?.title ?? 'Begin';
                 })()}
               </p>
+              <p className="text-xs text-saffron-200 mt-0.5">
+                {(() => {
+                  const lesson = lessons.find((l) => l.id === firstAvailable);
+                  return lesson?.description ?? '';
+                })()}
+              </p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-              <Play className="w-5 h-5 fill-white" />
+            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 ml-3">
+              <Play className="w-6 h-6 fill-white text-white" />
             </div>
           </button>
         </div>
       )}
 
       {/* Units and Lessons */}
-      <div className="max-w-2xl mx-auto px-4 mt-6 space-y-6">
+      <div className="max-w-2xl mx-auto px-4 mt-8 space-y-8">
         {units.map((unit) => {
           const unitLessons = lessons.filter((l) => l.unit_id === unit.id);
           const completedCount = unitLessons.filter((l) => completions.includes(l.id)).length;
@@ -130,32 +135,38 @@ export function LearningPathScreen({
             <div key={unit.id}>
               {/* Unit Banner */}
               <div
-                className={`rounded-3xl p-5 mb-4 ${
+                className={`rounded-3xl p-6 mb-6 relative overflow-hidden ${
                   isMaroon
-                    ? 'bg-gradient-to-br from-maroon-700 to-maroon-900'
-                    : 'bg-gradient-to-br from-saffron-500 to-saffron-700'
-                } shadow-lg`}
+                    ? 'bg-gradient-to-br from-maroon-600 via-maroon-700 to-maroon-900'
+                    : 'bg-gradient-to-br from-saffron-500 via-saffron-600 to-saffron-700'
+                } shadow-xl`}
               >
-                <div className="flex items-start justify-between">
+                {/* Decorative pattern */}
+                <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/10 blur-xl" />
+                <div className="absolute -left-4 -bottom-4 w-24 h-24 rounded-full bg-white/5 blur-lg" />
+
+                <div className="relative flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      {unit.icon_name === 'PenTool' && <PenTool className="w-4 h-4 text-white/80" />}
-                      {unit.icon_name === 'Scroll' && <Scroll className="w-4 h-4 text-white/80" />}
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-7 h-7 rounded-lg bg-white/15 flex items-center justify-center">
+                        {unit.icon_name === 'PenTool' && <PenTool className="w-4 h-4 text-white" />}
+                        {unit.icon_name === 'Scroll' && <Scroll className="w-4 h-4 text-white" />}
+                      </div>
                       <span className="text-xs font-bold text-white/70 uppercase tracking-wider">
                         Unit {unit.order_index}
                       </span>
                     </div>
-                    <h2 className="text-lg font-bold text-white">{unit.title}</h2>
-                    <p className="text-sm text-white/80 mt-0.5">{unit.description}</p>
+                    <h2 className="text-xl font-extrabold text-white leading-tight">{unit.title}</h2>
+                    <p className="text-sm text-white/75 mt-1 leading-relaxed">{unit.description}</p>
                   </div>
                   <div className="text-right shrink-0 ml-3">
-                    <div className="text-2xl font-extrabold text-white">{unitProgress}%</div>
-                    <div className="text-xs text-white/60">{completedCount}/{unitLessons.length}</div>
+                    <div className="text-3xl font-extrabold text-white tabular-nums">{unitProgress}%</div>
+                    <div className="text-xs text-white/50 font-medium">{completedCount}/{unitLessons.length} done</div>
                   </div>
                 </div>
-                <div className="mt-3 h-1.5 bg-white/20 rounded-full overflow-hidden">
+                <div className="mt-4 h-2 bg-white/15 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-white/80 rounded-full transition-all duration-500"
+                    className="h-full bg-white/90 rounded-full transition-all duration-700 ease-out"
                     style={{ width: `${unitProgress}%` }}
                   />
                 </div>
@@ -163,44 +174,17 @@ export function LearningPathScreen({
 
               {/* Lesson Path */}
               <div className="relative">
-                {/* Curved path SVG */}
-                <svg
-                  className="absolute inset-0 w-full h-full pointer-events-none"
-                  preserveAspectRatio="none"
-                  viewBox="0 0 100 100"
-                >
-                  {unitLessons.map((_, idx) => {
-                    if (idx === unitLessons.length - 1) return null;
-                    const offset = idx % 4;
-                    const x1 = [50, 70, 50, 30][offset];
-                    const y1 = (idx / unitLessons.length) * 100;
-                    const y2 = ((idx + 1) / unitLessons.length) * 100;
-                    const x2 = [70, 50, 30, 50][(idx + 1) % 4 - 1] ?? 50;
-                    return (
-                      <path
-                        key={idx}
-                        d={`M ${x1} ${y1} Q ${x1} ${(y1 + y2) / 2} ${x2} ${y2}`}
-                        stroke={isMaroon ? '#f9cccc' : '#ffd99b'}
-                        strokeWidth="0.8"
-                        fill="none"
-                        className="path-connector"
-                        opacity="0.5"
-                      />
-                    );
-                  })}
-                </svg>
-
-                <div className="relative space-y-6 py-2">
+                <div className="relative space-y-7 py-2">
                   {unitLessons.map((lesson, idx) => {
                     const status = getLessonStatus(lesson, lessons, completions);
                     const offset = idx % 4;
-                    const marginLeft = ['0%', '20%', '0%', '-20%'][offset];
+                    const marginLeft = ['0%', '18%', '0%', '-18%'][offset];
 
                     return (
                       <div
                         key={lesson.id}
-                        className="flex flex-col items-center transition-all"
-                        style={{ marginLeft }}
+                        className="flex flex-col items-center transition-all animate-fade-in"
+                        style={{ marginLeft, animationDelay: `${idx * 60}ms` }}
                       >
                         <LessonNode
                           lesson={lesson}
@@ -209,15 +193,15 @@ export function LearningPathScreen({
                           isMaroon={isMaroon}
                           onClick={() => status !== 'locked' && onStartLesson(lesson.id)}
                         />
-                        <div className="mt-2 text-center">
+                        <div className="mt-2.5 text-center">
                           <p className={`text-sm font-semibold ${
                             status === 'completed' ? 'text-success-600' :
                             status === 'available' ? (isMaroon ? 'text-maroon-700' : 'text-saffron-700') :
-                            'text-saffron-300'
+                            'text-saffron-300/70'
                           }`}>
                             {lesson.title}
                           </p>
-                          <p className="text-xs text-saffron-400 mt-0.5 max-w-[200px]">{lesson.description}</p>
+                          <p className="text-xs text-saffron-400/80 mt-0.5 max-w-[220px] leading-relaxed">{lesson.description}</p>
                         </div>
                       </div>
                     );
@@ -249,7 +233,7 @@ function LessonNode({
     return (
       <button
         disabled
-        className="w-16 h-16 rounded-full bg-saffron-100 flex items-center justify-center shadow-sm"
+        className="w-16 h-16 rounded-full bg-saffron-50 border-2 border-saffron-100 flex items-center justify-center shadow-sm"
       >
         <Lock className="w-6 h-6 text-saffron-300" />
       </button>
@@ -260,7 +244,7 @@ function LessonNode({
     return (
       <button
         onClick={onClick}
-        className="w-16 h-16 rounded-full bg-gradient-to-br from-gold-300 to-gold-500 flex items-center justify-center shadow-lg shadow-gold-400/30 hover:scale-110 active:scale-95 transition-all"
+        className="w-16 h-16 rounded-full bg-gradient-to-br from-gold-300 via-gold-400 to-gold-500 flex items-center justify-center shadow-xl shadow-gold-400/40 hover:scale-110 active:scale-95 transition-all border-2 border-white/30"
       >
         <Trophy className="w-7 h-7 text-white fill-white/30" />
       </button>
@@ -268,23 +252,23 @@ function LessonNode({
   }
 
   const gradientClass = isMaroon
-    ? 'bg-gradient-to-br from-maroon-400 to-maroon-600 shadow-maroon-400/30'
-    : 'bg-gradient-to-br from-saffron-400 to-saffron-600 shadow-saffron-400/30';
+    ? 'bg-gradient-to-br from-maroon-400 to-maroon-600 shadow-maroon-400/40'
+    : 'bg-gradient-to-br from-saffron-400 to-saffron-600 shadow-saffron-400/40';
 
   return (
     <button
       onClick={onClick}
-      className={`relative w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 active:scale-95 ${gradientClass} ${
+      className={`relative w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110 active:scale-95 border-2 border-white/20 ${gradientClass} ${
         isCurrent ? 'animate-pulse-ring' : ''
       }`}
     >
       {status === 'completed' ? (
-        <CheckCircle2 className="w-8 h-8 text-white" />
+        <CheckCircle2 className="w-8 h-8 text-white" strokeWidth={2.5} />
       ) : (
-        <Circle className="w-8 h-8 text-white fill-white/20" />
+        <Circle className="w-8 h-8 text-white fill-white/15" strokeWidth={2.5} />
       )}
       {isCurrent && (
-        <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-xs font-bold text-saffron-700 bg-white px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+        <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-xs font-bold text-saffron-700 bg-white px-2.5 py-1 rounded-full shadow-md whitespace-nowrap border border-saffron-200">
           Start
         </span>
       )}

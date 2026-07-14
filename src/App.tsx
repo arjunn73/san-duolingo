@@ -56,24 +56,28 @@ function AppContent() {
 
       {/* Bottom nav (hidden during lesson) */}
       {screen !== 'lesson' && (
-        <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-saffron-100">
-          <div className="max-w-2xl mx-auto flex items-center justify-around py-2">
+        <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-xl border-t border-saffron-100/50">
+          <div className="max-w-2xl mx-auto flex items-center justify-around py-2 px-4">
             <button
               onClick={() => setScreen('path')}
-              className={`flex flex-col items-center gap-0.5 px-6 py-1.5 rounded-xl transition-colors ${
-                screen === 'path' ? 'text-saffron-600' : 'text-saffron-300'
+              className={`flex flex-col items-center gap-0.5 px-8 py-1.5 rounded-xl transition-all ${
+                screen === 'path'
+                  ? 'text-saffron-600'
+                  : 'text-saffron-300 hover:text-saffron-500'
               }`}
             >
-              <Home className="w-6 h-6" />
+              <Home className="w-6 h-6" strokeWidth={screen === 'path' ? 2.5 : 2} />
               <span className="text-xs font-semibold">Learn</span>
             </button>
             <button
               onClick={() => setScreen('profile')}
-              className={`flex flex-col items-center gap-0.5 px-6 py-1.5 rounded-xl transition-colors ${
-                screen === 'profile' || screen === 'settings' ? 'text-saffron-600' : 'text-saffron-300'
+              className={`flex flex-col items-center gap-0.5 px-8 py-1.5 rounded-xl transition-all ${
+                screen === 'profile' || screen === 'settings'
+                  ? 'text-saffron-600'
+                  : 'text-saffron-300 hover:text-saffron-500'
               }`}
             >
-              <User className="w-6 h-6" />
+              <User className="w-6 h-6" strokeWidth={screen === 'profile' || screen === 'settings' ? 2.5 : 2} />
               <span className="text-xs font-semibold">Profile</span>
             </button>
           </div>

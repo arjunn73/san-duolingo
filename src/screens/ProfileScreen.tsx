@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth, useProgress } from '../lib/auth';
 import type { Unit, Lesson } from '../lib/supabase';
-import { Flame, Star, Trophy, BookOpen, Target, TrendingUp, LogOut } from 'lucide-react';
+import { Flame, Star, Trophy, BookOpen, Target, LogOut, ChevronRight, Award } from 'lucide-react';
 
 export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 'settings') => void }) {
   const { user, signOut } = useAuth();
@@ -23,13 +23,13 @@ export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 's
   }, []);
 
   return (
-    <div className="min-h-screen bg-cream pb-24">
-      <div className="sticky top-0 z-30 bg-cream/90 backdrop-blur-md border-b border-saffron-100">
+    <div className="min-h-screen bg-cream pb-28">
+      <div className="sticky top-0 z-30 bg-cream/80 backdrop-blur-xl border-b border-saffron-100/50">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="font-bold text-saffron-900 text-lg">Profile</h1>
+          <h1 className="font-extrabold text-saffron-900 text-lg">Profile</h1>
           <button
             onClick={signOut}
-            className="flex items-center gap-1.5 text-sm font-semibold text-saffron-500 hover:text-saffron-700"
+            className="flex items-center gap-1.5 text-sm font-semibold text-saffron-500 hover:text-saffron-700 transition-colors"
           >
             <LogOut className="w-4 h-4" />
             Sign Out
@@ -39,9 +39,11 @@ export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 's
 
       <div className="max-w-2xl mx-auto px-4 mt-6">
         {/* User card */}
-        <div className="bg-gradient-to-br from-saffron-500 to-saffron-700 rounded-3xl p-6 shadow-lg shadow-saffron-500/20 mb-6">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center text-2xl font-bold text-white">
+        <div className="bg-gradient-to-br from-saffron-500 via-saffron-600 to-saffron-700 rounded-3xl p-6 shadow-xl shadow-saffron-500/20 mb-6 relative overflow-hidden">
+          <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/10 blur-xl" />
+          <div className="absolute -left-4 -bottom-4 w-20 h-20 rounded-full bg-white/5 blur-lg" />
+          <div className="relative flex items-center gap-4">
+            <div className="w-18 h-18 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl font-extrabold text-white w-16 h-16 border-2 border-white/20">
               {(user?.email ?? 'U')[0].toUpperCase()}
             </div>
             <div>
@@ -80,7 +82,8 @@ export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 's
         </div>
 
         {/* Unit progress */}
-        <h2 className="text-sm font-bold text-saffron-400 uppercase tracking-wider mb-3">
+        <h2 className="text-xs font-bold text-saffron-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+          <Award className="w-3.5 h-3.5" />
           Unit Progress
         </h2>
         <div className="space-y-3 mb-6">
@@ -91,20 +94,30 @@ export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 's
             const isMaroon = unit.color_theme === 'maroon';
 
             return (
-              <div key={unit.id} className="bg-white rounded-2xl p-4 shadow-sm border border-saffron-100">
-                <div className="flex items-center justify-between mb-2">
-                  <div>
-                    <p className="font-bold text-saffron-900 text-sm">{unit.title}</p>
-                    <p className="text-xs text-saffron-400">{completedCount}/{unitLessons.length} lessons</p>
+              <div key={unit.id} className="bg-white rounded-2xl p-4 shadow-sm border border-saffron-100/50 hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                      isMaroon ? 'bg-maroon-50' : 'bg-saffron-50'
+                    }`}>
+                      {unit.icon_name === 'PenTool' && <span className="font-devanagari text-base font-bold text-saffron-600">क</span>}
+                      {unit.icon_name === 'Scroll' && <span className="font-devanagari text-base font-bold text-maroon-600">सू</span>}
+                    </div>
+                    <div>
+                      <p className="font-bold text-saffron-900 text-sm">{unit.title}</p>
+                      <p className="text-xs text-saffron-400">{completedCount}/{unitLessons.length} lessons</p>
+                    </div>
                   </div>
-                  <div className={`text-2xl font-extrabold ${isMaroon ? 'text-maroon-600' : 'text-saffron-600'}`}>
+                  <div className={`text-2xl font-extrabold ${isMaroon ? 'text-maroon-600' : 'text-saffron-600'} tabular-nums`}>
                     {unitProgress}%
                   </div>
                 </div>
                 <div className="h-2 bg-saffron-50 rounded-full overflow-hidden">
                   <div
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      isMaroon ? 'bg-maroon-500' : 'bg-saffron-500'
+                    className={`h-full rounded-full transition-all duration-700 ease-out ${
+                      isMaroon
+                        ? 'bg-gradient-to-r from-maroon-400 to-maroon-600'
+                        : 'bg-gradient-to-r from-saffron-400 to-saffron-600'
                     }`}
                     style={{ width: `${unitProgress}%` }}
                   />
@@ -117,7 +130,7 @@ export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 's
         {/* Settings link */}
         <button
           onClick={() => onNavigate('settings')}
-          className="w-full bg-white rounded-2xl p-4 shadow-sm border border-saffron-100 flex items-center justify-between hover:border-saffron-300 transition-colors"
+          className="w-full bg-white rounded-2xl p-4 shadow-sm border border-saffron-100/50 flex items-center justify-between hover:border-saffron-300 hover:shadow-md transition-all"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-saffron-50 flex items-center justify-center">
@@ -128,7 +141,7 @@ export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 's
               <p className="text-xs text-saffron-400">TTS voice, API key</p>
             </div>
           </div>
-          <TrendingUp className="w-5 h-5 text-saffron-300" />
+          <ChevronRight className="w-5 h-5 text-saffron-300" />
         </button>
       </div>
     </div>
@@ -153,12 +166,12 @@ function StatCard({
   }[color];
 
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm border border-saffron-100">
-      <div className={`w-10 h-10 rounded-xl ${bgClass} flex items-center justify-center mb-2`}>
+    <div className="bg-white rounded-2xl p-4 shadow-sm border border-saffron-100/50 hover:shadow-md transition-shadow">
+      <div className={`w-10 h-10 rounded-xl ${bgClass} flex items-center justify-center mb-2.5`}>
         {icon}
       </div>
       <p className="text-xs font-semibold text-saffron-400 uppercase tracking-wide">{label}</p>
-      <p className="text-xl font-extrabold text-saffron-900 mt-0.5">{value}</p>
+      <p className="text-xl font-extrabold text-saffron-900 mt-0.5 tabular-nums">{value}</p>
     </div>
   );
 }

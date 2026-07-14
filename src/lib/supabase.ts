@@ -42,6 +42,14 @@ export type Exercise = {
     transliteration?: string;
     pairs?: { left: string; right: string }[];
     correct_order?: string[];
+    title?: string;
+    subtitle?: string;
+    body?: string;
+    devanagari_examples?: string[];
+    transliteration_examples?: string[];
+    table_headers?: string[];
+    table_rows?: string[][];
+    tip?: string;
   };
   order_index: number;
   tts_text: string;
