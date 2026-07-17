@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import { useAuth, useProgress } from '../lib/auth';
 import type { Unit, Lesson } from '../lib/supabase';
-import { Flame, Star, Trophy, BookOpen, Target, LogOut, ChevronRight, Award, UserCircle, Sparkles } from 'lucide-react';
+import { Flame, Star, Trophy, BookOpen, Target, LogOut, ChevronRight, Award } from 'lucide-react';
 
-export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 'settings' | 'auth') => void }) {
-  const { user, isGuest, signOut, clearGuest } = useAuth();
+export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 'settings') => void }) {
+  const { user, signOut } = useAuth();
   const { progress, completions } = useProgress();
   const [units, setUnits] = useState<Unit[]>([]);
   const [lessons, setLessons] = useState<Lesson[]>([]);
 
   useEffect(() => {
     async function fetchData() {
-      if (!isSupabaseConfigured) return;
       const [unitsRes, lessonsRes] = await Promise.all([
         supabase.from('units').select('*').order('order_index'),
         supabase.from('lessons').select('*').order('order_index'),
@@ -23,65 +22,36 @@ export function ProfileScreen({ onNavigate }: { onNavigate: (screen: 'path' | 's
     fetchData();
   }, []);
 
-  const handleSignOut = () => {
-    if (isGuest) clearGuest();
-    else signOut();
-  };
-
   return (
     <div className="min-h-screen bg-cream pb-28">
       <div className="sticky top-0 z-30 bg-cream/80 backdrop-blur-xl border-b border-saffron-100/50">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="font-extrabold text-saffron-900 text-lg">{user ? 'Profile' : 'Account'}</h1>
-          {(user || isGuest) && (
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-1.5 text-sm font-semibold text-saffron-500 hover:text-saffron-700 transition-colors"
-            >
-              <LogOut className="w-4 h-4" />
-              {isGuest ? 'Exit Guest' : 'Sign Out'}
-            </button>
-          )}
+          <h1 className="font-extrabold text-saffron-900 text-lg">Profile</h1>
+          <button
+            onClick={signOut}
+            className="flex items-center gap-1.5 text-sm font-semibold text-saffron-500 hover:text-saffron-700 transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </button>
         </div>
       </div>
 
       <div className="max-w-2xl mx-auto px-4 mt-6">
-        {/* User/Guest card */}
-        {user ? (
-          <div className="bg-gradient-to-br from-saffron-500 via-saffron-600 to-saffron-700 rounded-3xl p-6 shadow-xl shadow-saffron-500/20 mb-6 relative overflow-hidden">
-            <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/10 blur-xl" />
-            <div className="absolute -left-4 -bottom-4 w-20 h-20 rounded-full bg-white/5 blur-lg" />
-            <div className="relative flex items-center gap-4">
-              <div className="rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl font-extrabold text-white w-16 h-16 border-2 border-white/20">
-                {(user?.email ?? 'U')[0].toUpperCase()}
-              </div>
-              <div>
-                <p className="text-white font-bold text-lg">{user?.email}</p>
-                <p className="text-white/70 text-sm">Sanskrit Learner</p>
-              </div>
+        {/* User card */}
+        <div className="bg-gradient-to-br from-saffron-500 via-saffron-600 to-saffron-700 rounded-3xl p-6 shadow-xl shadow-saffron-500/20 mb-6 relative overflow-hidden">
+          <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/10 blur-xl" />
+          <div className="absolute -left-4 -bottom-4 w-20 h-20 rounded-full bg-white/5 blur-lg" />
+          <div className="relative flex items-center gap-4">
+            <div className="w-18 h-18 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-3xl font-extrabold text-white w-16 h-16 border-2 border-white/20">
+              {(user?.email ?? 'U')[0].toUpperCase()}
+            </div>
+            <div>
+              <p className="text-white font-bold text-lg">{user?.email}</p>
+              <p className="text-white/70 text-sm">Sanskrit Learner</p>
             </div>
           </div>
-        ) : (
-          <div className="bg-gradient-to-br from-saffron-100 via-saffron-50 to-gold-50 rounded-3xl p-6 shadow-lg shadow-saffron-200/20 mb-6 relative overflow-hidden border border-saffron-200/50">
-            <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-saffron-200/30 blur-xl" />
-            <div className="relative flex items-center gap-4">
-              <div className="rounded-2xl bg-white/60 backdrop-blur-sm flex items-center justify-center w-16 h-16 border-2 border-saffron-200">
-                <UserCircle className="w-8 h-8 text-saffron-400" />
-              </div>
-              <div className="flex-1">
-                <p className="text-saffron-900 font-bold text-lg">Guest Mode</p>
-                <p className="text-saffron-500 text-sm">Your progress is saved locally on this device</p>
-              </div>
-            </div>
-            <button
-              onClick={() => onNavigate('auth')}
-              className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-saffron-500 to-saffron-600 text-white font-bold text-sm shadow-md shadow-saffron-500/20 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2"
-            >
-              <Sparkles className="w-4 h-4" />
-              Create Account to Save Progress
-            </button>
-          </div>
-        )}
+        </div>
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 gap-3 mb-6">

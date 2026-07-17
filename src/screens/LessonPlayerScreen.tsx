@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import { useProgress } from '../lib/auth';
 import type { Exercise } from '../lib/supabase';
 import {
@@ -32,10 +32,6 @@ export function LessonPlayerScreen({
 
   useEffect(() => {
     async function fetchExercises() {
-      if (!isSupabaseConfigured) {
-        setLoading(false);
-        return;
-      }
       const { data } = await supabase
         .from('exercises')
         .select('*')
@@ -248,7 +244,7 @@ function ExerciseContent({
   }, [exercise.id]);
 
   const handleTTS = async () => {
-    if (!exercise.tts_text || !isSupabaseConfigured) return;
+    if (!exercise.tts_text) return;
     try {
       const { data: settings } = await supabase
         .from('user_settings')
